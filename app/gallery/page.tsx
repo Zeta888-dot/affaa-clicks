@@ -64,7 +64,7 @@ export default async function GalleryPage({ searchParams }: { searchParams: Prom
           ))}
         </div>
 
-        {/* Photos Grid - Bigger Images */}
+        {/* Photos Grid - Mobile Tap Fix */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPhotos.map((photo: any, index: number) => (
             <FadeIn key={photo._id} delay={index * 0.1}>
@@ -73,9 +73,9 @@ export default async function GalleryPage({ searchParams }: { searchParams: Prom
                   src={urlFor(photo.image).url()}
                   alt={photo.title}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105 active:scale-105"
                 />
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6"
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 active:opacity-100 transition-opacity duration-300 flex items-end p-6"
                   style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%)' }}>
                   <div>
                     <p className="text-[10px] tracking-[3px] uppercase mb-2"

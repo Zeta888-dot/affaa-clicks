@@ -20,44 +20,113 @@ const socials = [
   },
 ];
 
+const navLinks = [
+  { label: 'Home', href: '/' },
+  { label: 'Gallery', href: '/gallery' },
+  { label: 'Journal', href: '/blog' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
+];
+
 export default function Footer() {
   return (
-    <footer style={{ borderTop: '0.5px solid var(--border)', backgroundColor: 'var(--background)' }}
-      className="py-12 px-8 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer
+      style={{ borderTop: '0.5px solid var(--border)', backgroundColor: 'var(--background)' }}
+      className="transition-colors duration-300 pt-14 pb-8 px-8"
+    >
+      <div className="max-w-7xl mx-auto">
 
-        <div className="text-center md:text-left">
-          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 300, color: 'var(--accent)', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '6px' }}>
-            Affaa Clicks
-          </h3>
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+
+          {/* Col 1 — Brand */}
+          <div>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 300, color: 'var(--accent)', letterSpacing: '4px', textTransform: 'uppercase', marginBottom: '8px' }}>
+              Affaa Clicks
+            </h3>
+            <p style={{ fontSize: '11px', letterSpacing: '1.5px', color: 'var(--muted)', marginBottom: '24px' }}>
+              Capturing Chitral & Beyond — #AffaaClicks
+            </p>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {socials.map((s) => (
+                <Link key={s.label} href={s.url} target="_blank" rel="noopener noreferrer"
+                  title={s.label}
+                  style={{
+                    width: '36px', height: '36px',
+                    border: '0.5px solid var(--border)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: 'var(--muted)', transition: 'color 0.2s, border-color 0.2s'
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--muted)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+                >
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-label={s.label}>
+                    <path d={s.icon} />
+                  </svg>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Col 2 — Explore */}
+          <div>
+            <p style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '20px' }}>
+              Explore
+            </p>
+            {navLinks.map((link) => (
+              <Link key={link.label} href={link.href}
+                style={{ display: 'block', fontSize: '13px', letterSpacing: '0.5px', color: 'var(--muted)', marginBottom: '12px', textDecoration: 'none', transition: 'color 0.2s' }}
+                onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; }}
+                onMouseLeave={e => { e.currentTarget.style.color = 'var(--muted)'; }}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Col 3 — Get in Touch */}
+          <div>
+            <p style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '20px' }}>
+              Get in touch
+            </p>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--muted)" strokeWidth="1.5">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M13 3a9 9 0 0 1 9 9M13 7a5 5 0 0 1 5 5"/>
+              </svg>
+              <span style={{ fontSize: '13px', color: 'var(--muted)' }}>wa.me/923456331153</span>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--muted)" strokeWidth="1.5">
+                <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <span style={{ fontSize: '13px', color: 'var(--muted)' }}>Chitral, KPK, Pakistan</span>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--muted)" strokeWidth="1.5">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+              <span style={{ fontSize: '13px', color: 'var(--muted)' }}>Available for shoots & collabs</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div style={{ borderTop: '0.5px solid var(--border)', paddingTop: '28px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <p style={{ fontSize: '11px', letterSpacing: '1px', color: 'var(--muted)' }}>
-            Capturing Chitral & Beyond — #AffaaClicks
+            © 2026 Affaa Clicks. All rights reserved.
+          </p>
+          <p style={{ fontSize: '11px', letterSpacing: '0.5px', color: 'var(--muted)' }}>
+            Chitral, Pakistan
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '12px' }}>
-          {socials.map((s) => (
-            <Link key={s.label} href={s.url} target="_blank" rel="noopener noreferrer"
-              title={s.label}
-              style={{
-                width: '38px', height: '38px', borderRadius: '2px',
-                border: '0.5px solid var(--border)', display: 'flex',
-                alignItems: 'center', justifyContent: 'center', color: 'var(--muted)',
-                transition: 'color 0.2s, border-color 0.2s'
-              }}
-              onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
-              onMouseLeave={e => { e.currentTarget.style.color = 'var(--muted)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
-            >
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-label={s.label}>
-                <path d={s.icon} />
-              </svg>
-            </Link>
-          ))}
-        </div>
-
-        <p style={{ fontSize: '11px', letterSpacing: '1px', color: 'var(--muted)' }}>
-          © 2026 Affaa Clicks. All rights reserved.
-        </p>
       </div>
     </footer>
   );

@@ -37,43 +37,38 @@ export default async function Home() {
             />
           </div>
 
-          {/* Content */}
-          <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-            <p style={{
-              fontSize: '11px', letterSpacing: '5px', textTransform: 'uppercase',
-              color: 'var(--accent)', marginBottom: '32px', fontFamily: 'var(--font-body)'
-            }}>
-              Nature & Landscape Photography
-            </p>
-            <h1 style={{
-              fontFamily: 'var(--font-display)', fontSize: 'clamp(52px, 10vw, 96px)',
-              fontWeight: 300, lineHeight: 1.05, marginBottom: '32px', color: '#e8ede8'
-            }}>
-              Where Light<br />Meets <em style={{ color: 'var(--accent)', fontStyle: 'italic' }}>Wild</em>
-            </h1>
-            <p style={{
-              fontSize: '15px', color: 'rgba(232,237,232,0.7)', letterSpacing: '1px',
-              marginBottom: '48px', maxWidth: '480px', lineHeight: 1.7, margin: '0 auto 48px'
-            }}>
-              Cinematic landscapes captured through years of chasing golden light across mountains and valleys
-            </p>
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <Link href="/gallery" style={{
-                padding: '14px 40px', backgroundColor: 'var(--accent)', color: 'var(--background)',
-                fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase',
-                fontWeight: 500, borderRadius: '2px', transition: 'opacity 0.3s'
-              }}>
-                View Gallery
-              </Link>
-              <Link href="/about" style={{
-                padding: '14px 40px', border: '1px solid rgba(232,237,232,0.3)', color: '#e8ede8',
-                fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase',
-                borderRadius: '2px', transition: 'all 0.3s'
-              }}>
-                My Story
-              </Link>
-            </div>
-          </div>
+          {/* Hero Content */}
+<div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+  <p className="text-xs tracking-[5px] uppercase mb-8 font-medium"
+    style={{ color: 'rgba(232,237,232,0.9)' }}>
+    Nature & Landscape Photography
+  </p>
+  
+  {/* ... h1 and p same ... */}
+  
+  <div className="flex gap-4 justify-center flex-wrap mt-12">
+    <Link 
+      href="/gallery" 
+      className="px-10 py-4 font-semibold text-sm tracking-wider uppercase rounded-full transition-all duration-300 hover:scale-105"
+      style={{ 
+        backgroundColor: 'var(--accent)', 
+        color: 'var(--background)'
+      }}
+    >
+      View Gallery
+    </Link>
+    <Link 
+      href="/about" 
+      className="px-10 py-4 text-sm tracking-wider uppercase rounded-full transition-all duration-300 border"
+      style={{ 
+        borderColor: 'rgba(232,237,232,0.4)', 
+        color: '#e8ede8'
+      }}
+    >
+      My Story
+    </Link>
+  </div>
+</div>
 
           {/* Scroll Indicator */}
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">

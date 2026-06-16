@@ -5,9 +5,9 @@
   --background: #f5f0e8;
   --foreground: #1a1a1a;
   --muted: #8a7e6b;
-  --accent: #d4af37;  /* Tight golden */
-  --accent-hover: #c9a227;
-  --border: rgba(212,175,55,0.3);
+  --accent: #F5A623;  /* Bright golden */
+  --accent-hover: #E09000;
+  --border: rgba(245,166,35,0.3);
   --font-display: 'Cormorant Garamond', serif;
   --font-body: 'Space Grotesk', sans-serif;
 }
@@ -16,9 +16,9 @@ html.dark {
   --background: #0a0a0a;
   --foreground: #e8ede8;
   --muted: #a09580;
-  --accent: #e5c158;  /* Bright golden for dark */
-  --accent-hover: #d4af37;
-  --border: rgba(229,193,88,0.3);
+  --accent: #F5A623;  /* Same bright golden */
+  --accent-hover: #FFB84D;
+  --border: rgba(245,166,35,0.3);
 }
 
 body {

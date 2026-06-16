@@ -72,24 +72,12 @@ export default async function Home() {
               >
                 View Gallery
               </Link>
-              <Link 
-                href="/about" 
-                className="px-10 py-4 text-sm tracking-wider uppercase rounded-full transition-all duration-300 border hover:border-transparent"
-                style={{ 
-                  borderColor: 'rgba(255,255,255,0.4)', 
-                  color: '#ffffff'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--accent)';
-                  e.currentTarget.style.color = 'var(--background)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.color = '#ffffff';
-                }}
-              >
-                My Story
-              </Link>
+             <Link 
+  href="/about" 
+  className="px-10 py-4 text-sm tracking-wider uppercase rounded-full transition-all duration-300 border border-white/40 text-white hover:bg-[var(--accent)] hover:text-[var(--background)] hover:border-transparent"
+>
+  My Story
+</Link>
             </div>
           </div>
 

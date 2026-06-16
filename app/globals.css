@@ -2,21 +2,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f0f2f0;
-  --foreground: #0d2e20;
-  --muted: #4a7060;
-  --accent: #1a6b4a;
-  --border: rgba(26,107,74,0.2);
+  --background: #f5f0e8;
+  --foreground: #1a1a1a;
+  --muted: #8a7e6b;
+  --accent: #c9a227;
+  --accent-hover: #b8941f;
+  --border: rgba(201,162,39,0.25);
   --font-display: 'Cormorant Garamond', serif;
   --font-body: 'Space Grotesk', sans-serif;
 }
 
 html.dark {
-  --background: #080c0b;
-  --foreground: #e8ede8;
-  --muted: #6b8c7e;
-  --accent: #2dd4a0;
-  --border: rgba(45,212,160,0.2);
+  --background: #0a0a0a;
+  --foreground: #f0f0f0;
+  --muted: #a09580;
+  --accent: #d4af37;
+  --accent-hover: #e5c158;
+  --border: rgba(212,175,55,0.3);
 }
 
 body {

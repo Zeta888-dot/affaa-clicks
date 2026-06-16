@@ -1,112 +1,110 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { urlFor } from "@/lib/sanity/client";
 
 interface LightboxProps {
-  src: string;
-  alt: string;
+  photos: any[];
+  initialIndex: number;
+  isOpen: boolean;
   onClose: () => void;
-  onPrev?: () => void;
-  onNext?: () => void;
-  hasPrev?: boolean;
-  hasNext?: boolean;
 }
 
-export default function Lightbox({ src, alt, onClose, onPrev, onNext, hasPrev, hasNext }: LightboxProps) {
+export default function Lightbox({ photos, initialIndex, isOpen, onClose }: LightboxProps) {
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowLeft" && onPrev) onPrev();
-      if (e.key === "ArrowRight" && onNext) onNext();
-    };
-    document.addEventListener("keydown", handleKey);
-    document.body.style.overflow = "hidden";
+    setCurrentIndex(initialIndex);
+  }, [initialIndex]);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
     return () => {
-      document.removeEventListener("keydown", handleKey);
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "unset";
     };
-  }, [onClose, onPrev, onNext]);
+  }, [isOpen]);
+
+  const goNext = useCallback(() => {
+    setCurrentIndex((prev) => (prev + 1) % photos.length);
+  }, [photos.length]);
+
+  const goPrev = useCallback(() => {
+    setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
+  }, [photos.length]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") goNext();
+      if (e.key === "ArrowLeft") goPrev();
+    };
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose, goNext, goPrev]);
+
+  if (!isOpen || !photos[currentIndex]) return null;
+
+  const currentPhoto = photos[currentIndex];
 
   return (
-    <div
-      onClick={onClose}
-      style={{
-        position: 'fixed', inset: 0, zIndex: 1000,
-        backgroundColor: 'rgba(0,0,0,0.95)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '20px',
-      }}
-    >
-      {/* Close */}
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center"
+      style={{ backgroundColor: 'rgba(0,0,0,0.95)' }}>
+      
+      {/* Close Button */}
       <button
         onClick={onClose}
-        style={{
-          position: 'absolute', top: '20px', right: '20px',
-          width: '40px', height: '40px', borderRadius: '2px',
-          border: '0.5px solid rgba(255,255,255,0.2)',
-          backgroundColor: 'transparent', color: 'white',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'pointer', zIndex: 10,
-        }}
+        className="absolute top-6 right-6 z-50 p-2 text-white/80 hover:text-white transition-colors"
       >
-        <X size={18} />
+        <X size={32} />
       </button>
 
-      {/* Prev */}
-      {hasPrev && (
-        <button
-          onClick={(e) => { e.stopPropagation(); onPrev?.(); }}
-          style={{
-            position: 'absolute', left: '20px',
-            width: '44px', height: '44px', borderRadius: '2px',
-            border: '0.5px solid rgba(255,255,255,0.2)',
-            backgroundColor: 'transparent', color: 'white',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', zIndex: 10,
-          }}
-        >
-          <ChevronLeft size={22} />
-        </button>
-      )}
+      {/* Prev Button */}
+      <button
+        onClick={goPrev}
+        className="absolute left-4 md:left-8 z-50 p-2 text-white/60 hover:text-white transition-colors"
+      >
+        <ChevronLeft size={48} />
+      </button>
+
+      {/* Next Button */}
+      <button
+        onClick={goNext}
+        className="absolute right-4 md:right-8 z-50 p-2 text-white/60 hover:text-white transition-colors"
+      >
+        <ChevronRight size={48} />
+      </button>
 
       {/* Image */}
-      <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: '90vw', maxHeight: '90vh', position: 'relative' }}>
-        <img
-          src={src}
-          alt={alt}
-          style={{
-            maxWidth: '90vw', maxHeight: '85vh',
-            objectFit: 'contain', borderRadius: '2px',
-            display: 'block',
-          }}
+      <div className="relative w-full h-full max-w-5xl max-h-[85vh] mx-4">
+        <Image
+          src={urlFor(currentPhoto.image).url()}
+          alt={currentPhoto.title}
+          fill
+          className="object-contain"
+          priority
         />
+        
         {/* Caption */}
-        <p style={{
-          textAlign: 'center', marginTop: '12px',
-          fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.4)',
-        }}>
-          {alt} — <span style={{ color: 'var(--accent)' }}>#AffaaClicks</span>
-        </p>
+        <div className="absolute bottom-0 left-0 right-0 p-6 text-center"
+          style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent)' }}>
+          <p className="text-[10px] tracking-[3px] uppercase mb-2"
+            style={{ color: 'var(--accent)' }}>
+            {currentPhoto.category?.title}
+          </p>
+          <h3 className="text-2xl font-light text-white">{currentPhoto.title}</h3>
+          <p className="text-sm text-white/60 mt-2">
+            {currentIndex + 1} / {photos.length}
+          </p>
+        </div>
       </div>
-
-      {/* Next */}
-      {hasNext && (
-        <button
-          onClick={(e) => { e.stopPropagation(); onNext?.(); }}
-          style={{
-            position: 'absolute', right: '20px',
-            width: '44px', height: '44px', borderRadius: '2px',
-            border: '0.5px solid rgba(255,255,255,0.2)',
-            backgroundColor: 'transparent', color: 'white',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            cursor: 'pointer', zIndex: 10,
-          }}
-        >
-          <ChevronRight size={22} />
-        </button>
-      )}
     </div>
   );
 }

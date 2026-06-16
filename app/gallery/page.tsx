@@ -1,17 +1,33 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { client, urlFor } from "@/lib/sanity/client";
 import { allPhotosQuery, allCategoriesQuery } from "@/lib/sanity/queries";
 import Image from "next/image";
 import Link from "next/link";
 import FadeIn from "../components/FadeIn";
+import Lightbox from "../components/Lightbox";
 
-export default async function GalleryPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
-  const params = await searchParams;
-  const photos = await client.fetch(allPhotosQuery);
-  const categories = await client.fetch(allCategoriesQuery);
+export default function GalleryPage() {
+  const [photos, setPhotos] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
-  const filteredPhotos = params.category
-    ? photos.filter((p: any) => p.category?.slug?.current === params.category)
-    : photos;
+  useEffect(() => {
+    const fetchData = async () => {
+      const photosData = await client.fetch(allPhotosQuery);
+      const categoriesData = await client.fetch(allCategoriesQuery);
+      setPhotos(photosData);
+      setCategories(categoriesData);
+    };
+    fetchData();
+  }, []);
+
+  const openLightbox = (index: number) => {
+    setCurrentPhotoIndex(index);
+    setLightboxOpen(true);
+  };
 
   return (
     <div className="min-h-screen transition-colors duration-300"
@@ -33,15 +49,8 @@ export default async function GalleryPage({ searchParams }: { searchParams: Prom
         <div className="flex flex-wrap justify-center gap-3 mb-16">
           <Link
             href="/gallery"
-            className={`px-8 py-3 text-xs tracking-[2px] uppercase rounded-sm transition-all duration-300 ${
-              !params.category 
-                ? 'text-black' 
-                : 'border hover:bg-[var(--accent)] hover:text-black hover:border-transparent'
-            }`}
-            style={{ 
-              backgroundColor: !params.category ? 'var(--accent)' : 'transparent',
-              borderColor: 'var(--border)'
-            }}
+            className="px-8 py-3 text-xs tracking-[2px] uppercase rounded-sm transition-all duration-300 border hover:bg-[var(--accent)] hover:text-black hover:border-transparent"
+            style={{ borderColor: 'var(--border)' }}
           >
             All
           </Link>
@@ -49,26 +58,22 @@ export default async function GalleryPage({ searchParams }: { searchParams: Prom
             <Link
               key={cat._id}
               href={`/gallery?category=${cat.slug.current}`}
-              className={`px-8 py-3 text-xs tracking-[2px] uppercase rounded-sm transition-all duration-300 ${
-                params.category === cat.slug.current
-                  ? 'text-black' 
-                  : 'border hover:bg-[var(--accent)] hover:text-black hover:border-transparent'
-              }`}
-              style={{ 
-                backgroundColor: params.category === cat.slug.current ? 'var(--accent)' : 'transparent',
-                borderColor: 'var(--border)'
-              }}
+              className="px-8 py-3 text-xs tracking-[2px] uppercase rounded-sm transition-all duration-300 border hover:bg-[var(--accent)] hover:text-black hover:border-transparent"
+              style={{ borderColor: 'var(--border)' }}
             >
               {cat.title}
             </Link>
           ))}
         </div>
 
-        {/* Photos Grid - Mobile Tap Fix */}
+        {/* Photos Grid - Clickable */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPhotos.map((photo: any, index: number) => (
+          {photos.map((photo: any, index: number) => (
             <FadeIn key={photo._id} delay={index * 0.1}>
-              <div className="relative aspect-[4/3] overflow-hidden rounded-lg group cursor-pointer">
+              <div 
+                className="relative aspect-[4/3] overflow-hidden rounded-lg group cursor-pointer"
+                onClick={() => openLightbox(index)}
+              >
                 <Image
                   src={urlFor(photo.image).url()}
                   alt={photo.title}
@@ -83,19 +88,22 @@ export default async function GalleryPage({ searchParams }: { searchParams: Prom
                       {photo.category?.title}
                     </p>
                     <h3 className="text-xl font-light text-white">{photo.title}</h3>
+                    <p className="text-xs text-white/50 mt-1">Click to view</p>
                   </div>
                 </div>
               </div>
             </FadeIn>
           ))}
         </div>
-
-        {filteredPhotos.length === 0 && (
-          <div className="text-center py-20">
-            <p style={{ color: 'var(--muted)' }}>No photos found in this category</p>
-          </div>
-        )}
       </div>
+
+      {/* Lightbox */}
+      <Lightbox
+        photos={photos}
+        initialIndex={currentPhotoIndex}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+      />
     </div>
   );
 }

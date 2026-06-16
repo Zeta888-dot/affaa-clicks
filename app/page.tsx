@@ -1,10 +1,3 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Affaa Clicks — Nature & Landscape Photography from Chitral",
-  description: "Explore stunning nature and landscape photography from Chitral, Pakistan by Affaa. Travel guides, photo tips, and cultural insights from the Hindu Kush.",
-  keywords: "Affaa Clicks, Chitral photography, Pakistan landscape, Hindu Kush photos, nature photography Pakistan, travel blogger Chitral",
-};
 import { client, urlFor } from "@/lib/sanity/client";
 import { featuredPhotosQuery, allCategoriesQuery } from "@/lib/sanity/queries";
 import Image from "next/image";
@@ -16,103 +9,102 @@ export default async function Home() {
   const categories = await client.fetch(allCategoriesQuery);
 
   return (
-    <div className="min-h-screen transition-colors duration-300"
-      style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
-
-      {/* Hero */}
+    <div className="min-h-screen bg-[#0a0a0a] text-white">
+      
+      {/* Hero Section with Landscape Image */}
       <FadeIn>
-        <section className="flex flex-col items-center justify-center min-h-[85vh] px-8 text-center">
-          <p style={{
-            fontSize: '11px', letterSpacing: '4px', textTransform: 'uppercase',
-            color: 'var(--accent)', marginBottom: '24px', fontFamily: 'var(--font-body)'
-          }}>
-            Nature & Landscape Photography
-          </p>
-          <h1 style={{
-            fontFamily: 'var(--font-display)', fontSize: 'clamp(52px, 10vw, 96px)',
-            fontWeight: 300, lineHeight: 1.05, marginBottom: '24px', color: 'var(--foreground)'
-          }}>
-            Where Light<br />Meets <em style={{ color: 'var(--accent)', fontStyle: 'italic' }}>Wild</em>
-          </h1>
-          <p style={{
-            fontSize: '14px', color: 'var(--muted)', letterSpacing: '1px',
-            marginBottom: '48px', maxWidth: '420px', lineHeight: 1.7
-          }}>
-            Cinematic landscapes captured through years of chasing golden light across mountains and valleys
-          </p>
-          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <Link href="/gallery" style={{
-              padding: '13px 36px', backgroundColor: 'var(--accent)', color: 'var(--background)',
-              fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase',
-              fontWeight: 500, borderRadius: '2px',
-            }}>
-              View Gallery
-            </Link>
-            <Link href="/about" style={{
-              padding: '13px 36px', border: '0.5px solid var(--border)', color: 'var(--accent)',
-              fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase',
-              borderRadius: '2px',
-            }}>
-              My Story
-            </Link>
+        <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/Hero.jpeg"
+              alt="Landscape"
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#0a0a0a]" />
+          </div>
+
+          <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+            <p className="text-xs tracking-[5px] uppercase text-[#f59e0b] mb-8 font-medium">
+              Nature & Landscape Photography
+            </p>
+            <h1 className="text-5xl md:text-7xl lg:text-[7rem] font-bold tracking-tight mb-8 leading-[0.95]">
+              Where Light<br />
+              Meets <em className="text-[#f59e0b] not-italic">Wild</em>
+            </h1>
+            <p className="text-base md:text-lg text-white/60 max-w-lg mx-auto mb-12 leading-relaxed font-light">
+              Cinematic landscapes captured through years of chasing golden light across mountains and valleys
+            </p>
+            <div className="flex gap-5 justify-center flex-wrap">
+              <Link 
+                href="/gallery" 
+                className="px-10 py-4 bg-[#f59e0b] text-black font-semibold text-sm tracking-wider uppercase rounded-full hover:bg-[#d97706] transition-all duration-300 hover:scale-105"
+              >
+                View Gallery
+              </Link>
+              <Link 
+                href="/about" 
+                className="px-10 py-4 border border-white/20 text-white text-sm tracking-wider uppercase rounded-full hover:bg-white/10 transition-all duration-300"
+              >
+                My Story
+              </Link>
+            </div>
+          </div>
+
+          {/* Scroll Indicator */}
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+            <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
+              <div className="w-1 h-2 bg-[#f59e0b] rounded-full" />
+            </div>
           </div>
         </section>
       </FadeIn>
 
-      {/* Stats */}
-      <div style={{ borderTop: '0.5px solid var(--border)', borderBottom: '0.5px solid var(--border)', display: 'flex' }}>
-        {[
-          { num: '500+', label: 'Expeditions' },
-          { num: '10+', label: 'Years' },
-          { num: '12', label: 'Countries' },
-          { num: '200+', label: 'Clients' },
-        ].map((s, i) => (
-          <div key={i} style={{
-            flex: 1, padding: '28px 16px', textAlign: 'center',
-            borderRight: i < 3 ? '0.5px solid var(--border)' : 'none'
-          }}>
-            <div style={{ fontFamily: 'var(--font-display)', fontSize: '42px', fontWeight: 300, color: 'var(--accent)', lineHeight: 1 }}>
-              {s.num}
+      {/* Stats Bar */}
+      <div className="border-y border-white/10 bg-[#0a0a0a]">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4">
+          {[
+            { num: '500+', label: 'Expeditions' },
+            { num: '7+', label: 'Years' },
+            { num: '12', label: 'Countries' },
+            { num: '200+', label: 'Clients' },
+          ].map((stat, i) => (
+            <div key={i} className={`py-8 text-center ${i < 3 ? 'border-r border-white/10' : ''}`}>
+              <div className="text-3xl md:text-4xl font-light text-[#f59e0b] mb-1">{stat.num}</div>
+              <div className="text-[10px] tracking-[3px] uppercase text-white/40">{stat.label}</div>
             </div>
-            <div style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)', marginTop: '6px' }}>
-              {s.label}
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {/* Featured Photos */}
-      <section className="px-8 py-24 max-w-7xl mx-auto">
+      <section className="px-6 md:px-12 py-24 max-w-7xl mx-auto">
         <FadeIn>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
-            <p style={{ fontSize: '11px', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--accent)' }}>
+          <div className="flex items-center gap-6 mb-16">
+            <p className="text-[11px] tracking-[4px] uppercase text-[#f59e0b] whitespace-nowrap">
               Featured Work
             </p>
-            <div style={{ flex: 1, height: '0.5px', backgroundColor: 'var(--border)' }} />
+            <div className="flex-1 h-px bg-white/10" />
           </div>
         </FadeIn>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {photos.map((photo: any, index: number) => (
             <FadeIn key={photo._id} delay={index * 0.1}>
-              <div className="relative aspect-[4/3] overflow-hidden group" style={{ borderRadius: '2px' }}>
+              <div className="relative aspect-[4/3] overflow-hidden rounded-lg group cursor-pointer">
                 <Image
                   src={urlFor(photo.image).url()}
                   alt={photo.title}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5"
-                  style={{ background: 'linear-gradient(to top, rgba(8,12,11,0.8) 0%, transparent 60%)' }}>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                   <div>
-                    <p style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--accent)', marginBottom: '4px' }}>
+                    <p className="text-[10px] tracking-[3px] uppercase text-[#f59e0b] mb-2">
                       {photo.category?.title}
                     </p>
-                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 300, color: '#e8ede8' }}>
-                      {photo.title}
-                    </h3>
-                    <p style={{ fontSize: '11px', color: 'rgba(232,237,232,0.5)', marginTop: '2px', letterSpacing: '1px' }}>
-                      #AffaaClicks
-                    </p>
+                    <h3 className="text-xl font-light text-white">{photo.title}</h3>
                   </div>
                 </div>
               </div>
@@ -122,22 +114,22 @@ export default async function Home() {
       </section>
 
       {/* Categories */}
-      <section className="px-8 py-24 max-w-7xl mx-auto">
+      <section className="px-6 md:px-12 pb-24 max-w-7xl mx-auto">
         <FadeIn>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
-            <p style={{ fontSize: '11px', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--accent)' }}>
+          <div className="flex items-center gap-6 mb-16">
+            <p className="text-[11px] tracking-[4px] uppercase text-[#f59e0b] whitespace-nowrap">
               Categories
             </p>
-            <div style={{ flex: 1, height: '0.5px', backgroundColor: 'var(--border)' }} />
+            <div className="flex-1 h-px bg-white/10" />
           </div>
         </FadeIn>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {categories.map((cat: any, index: number) => (
             <FadeIn key={cat._id} delay={index * 0.1}>
-              <Link
+              <Link 
                 href={`/gallery?category=${cat.slug.current}`}
-                className="relative overflow-hidden group block"
-                style={{ aspectRatio: '1/1', minHeight: '150px', borderRadius: '2px' }}
+                className="relative aspect-square overflow-hidden rounded-lg group block"
               >
                 {cat.coverImage ? (
                   <Image
@@ -147,22 +139,17 @@ export default async function Home() {
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="absolute inset-0" style={{ backgroundColor: 'var(--muted)', opacity: 0.15 }} />
+                  <div className="absolute inset-0 bg-white/5" />
                 )}
-                <div className="absolute inset-0 flex items-end p-4"
-                  style={{ background: 'linear-gradient(to top, rgba(8,12,11,0.75) 0%, transparent 60%)' }}>
-                  <h3 style={{
-                    fontFamily: 'var(--font-display)', fontSize: '20px',
-                    fontWeight: 300, color: '#e8ede8', letterSpacing: '1px'
-                  }}>
-                    {cat.title}
-                  </h3>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-5">
+                  <h3 className="text-lg font-light tracking-wide">{cat.title}</h3>
                 </div>
               </Link>
             </FadeIn>
           ))}
         </div>
       </section>
+
     </div>
   );
 }

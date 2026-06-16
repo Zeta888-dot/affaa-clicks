@@ -23,7 +23,6 @@ export default async function Home() {
       {/* Hero with Background Image */}
       <FadeIn>
         <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden">
-          {/* Background Image */}
           <div className="absolute inset-0 z-0">
             <Image
               src="/Hero.jpeg"
@@ -37,7 +36,6 @@ export default async function Home() {
             />
           </div>
 
-          {/* Content */}
           <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
             <p className="text-xs tracking-[5px] uppercase mb-6 font-medium"
               style={{ color: 'var(--accent)' }}>
@@ -72,16 +70,15 @@ export default async function Home() {
               >
                 View Gallery
               </Link>
-             <Link 
-  href="/about" 
-  className="px-10 py-4 text-sm tracking-wider uppercase rounded-full transition-all duration-300 border border-white/40 text-white hover:bg-[var(--accent)] hover:text-[var(--background)] hover:border-transparent"
->
-  My Story
-</Link>
+              <Link 
+                href="/about" 
+                className="px-10 py-4 text-sm tracking-wider uppercase rounded-full transition-all duration-300 border border-white/40 text-white hover:bg-[var(--accent)] hover:text-[var(--background)] hover:border-transparent active:bg-[var(--accent)] active:text-[var(--background)] active:border-transparent"
+              >
+                My Story
+              </Link>
             </div>
           </div>
 
-          {/* Scroll Indicator */}
           <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
             <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
               <div className="w-1 h-2 rounded-full" style={{ backgroundColor: 'var(--accent)' }} />
@@ -90,7 +87,7 @@ export default async function Home() {
         </section>
       </FadeIn>
 
-      {/* Stats - Responsive Grid */}
+      {/* Stats */}
       <div className="border-y" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4">
           {[
@@ -115,7 +112,7 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* Featured Photos */}
+      {/* Featured Photos - Mobile Tap Fix */}
       <section className="px-6 md:px-12 py-24 max-w-7xl mx-auto">
         <FadeIn>
           <div className="flex items-center gap-6 mb-16">
@@ -135,9 +132,9 @@ export default async function Home() {
                   src={urlFor(photo.image).url()}
                   alt={photo.title}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105 group-active:scale-105"
                 />
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6"
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-300 flex items-end p-6"
                   style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%)' }}>
                   <div>
                     <p className="text-[10px] tracking-[3px] uppercase mb-2"
@@ -177,7 +174,7 @@ export default async function Home() {
                     src={urlFor(cat.coverImage).url()}
                     alt={cat.title}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105 group-active:scale-105"
                   />
                 ) : (
                   <div className="absolute inset-0" style={{ backgroundColor: 'var(--muted)', opacity: 0.15 }} />

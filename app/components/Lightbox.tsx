@@ -26,7 +26,9 @@ export default function Lightbox({ photos, initialIndex, isOpen, onClose }: Ligh
     } else {
       document.body.style.overflow = "unset";
     }
-    return () => { document.body.style.overflow = "unset"; };
+    return () => {
+      document.body.style.overflow = "unset";
+    };
   }, [isOpen]);
 
   const goNext = useCallback(() => {
@@ -52,49 +54,54 @@ export default function Lightbox({ photos, initialIndex, isOpen, onClose }: Ligh
     setDownloading(true);
     try {
       const imgUrl = urlFor(photos[currentIndex].image).width(2000).url();
-      
-      // Fetch image as blob (bypass CORS via proxy pattern)
-      const response = await fetch(`/api/download-image?url=${encodeURIComponent(imgUrl)}`);
-      const blob = await response.blob();
-      const imageBitmap = await createImageBitmap(blob);
+      const proxyUrl = `/api/download-image?url=${encodeURIComponent(imgUrl)}`;
+
+      const img = new window.Image();
+      img.crossOrigin = "anonymous";
+
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error("Image load failed"));
+        img.src = proxyUrl;
+      });
 
       const canvas = document.createElement("canvas");
-      canvas.width = imageBitmap.width;
-      canvas.height = imageBitmap.height;
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
       const ctx = canvas.getContext("2d")!;
 
-      // Draw original image
-      ctx.drawImage(imageBitmap, 0, 0);
+      ctx.drawImage(img, 0, 0);
 
-      // Watermark settings
+      // Watermark
       const fontSize = Math.max(canvas.width * 0.025, 20);
       ctx.font = `${fontSize}px Georgia, serif`;
       ctx.textAlign = "right";
       ctx.textBaseline = "bottom";
-
-      // Shadow for readability
       ctx.shadowColor = "rgba(0,0,0,0.6)";
       ctx.shadowBlur = 8;
       ctx.shadowOffsetX = 1;
       ctx.shadowOffsetY = 1;
-
-      // White watermark text
       ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
       const padding = canvas.width * 0.02;
       ctx.fillText("© Affaa Clicks", canvas.width - padding, canvas.height - padding);
 
-      // Download
       canvas.toBlob((blob) => {
         if (!blob) return;
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `affaa-clicks-${photos[currentIndex].title?.replace(/\s+/g, "-").toLowerCase() || "photo"}.jpg`;
+        a.download = `affaa-clicks-${
+          photos[currentIndex].title?.replace(/\s+/g, "-").toLowerCase() || "photo"
+        }.jpg`;
+        document.body.appendChild(a);
         a.click();
+        document.body.removeChild(a);
         URL.revokeObjectURL(url);
       }, "image/jpeg", 0.92);
+
     } catch (err) {
       console.error("Download failed:", err);
+      alert("Download failed, please try again.");
     } finally {
       setDownloading(false);
     }
@@ -108,10 +115,11 @@ export default function Lightbox({ photos, initialIndex, isOpen, onClose }: Ligh
       className="fixed inset-0 z-[9999] flex items-center justify-center"
       style={{ backgroundColor: "rgba(0,0,0,0.95)" }}
     >
-      {/* Top bar: Close + Download */}
-      <div className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
-        style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)" }}>
-        
+      {/* Top bar */}
+      <div
+        className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
+        style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.6), transparent)" }}
+      >
         {/* Download Button */}
         <button
           onClick={downloadWithWatermark}
@@ -170,8 +178,10 @@ export default function Lightbox({ photos, initialIndex, isOpen, onClose }: Ligh
           className="absolute bottom-0 left-0 right-0 p-6 text-center"
           style={{ background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent)" }}
         >
-          <p className="text-[10px] tracking-[3px] uppercase mb-2"
-            style={{ color: "var(--accent)" }}>
+          <p
+            className="text-[10px] tracking-[3px] uppercase mb-2"
+            style={{ color: "var(--accent)" }}
+          >
             {currentPhoto.category?.title}
           </p>
           <h3 className="text-2xl font-light text-white">{currentPhoto.title}</h3>

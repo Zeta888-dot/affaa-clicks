@@ -1,20 +1,33 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Affaa Clicks — Nature & Landscape Photography from Chitral",
-  description: "Explore stunning nature and landscape photography from Chitral, Pakistan by Affaa. Travel guides, photo tips, and cultural insights from the Hindu Kush.",
-  keywords: "Affaa Clicks, Chitral photography, Pakistan landscape, Hindu Kush photos, nature photography Pakistan, travel blogger Chitral",
-};
-
+import { useState, useEffect } from "react";
 import { client, urlFor } from "@/lib/sanity/client";
 import { featuredPhotosQuery, allCategoriesQuery } from "@/lib/sanity/queries";
 import Image from "next/image";
 import Link from "next/link";
 import FadeIn from "./components/FadeIn";
+import Lightbox from "./components/Lightbox";
 
-export default async function Home() {
-  const photos = await client.fetch(featuredPhotosQuery);
-  const categories = await client.fetch(allCategoriesQuery);
+export default function Home() {
+  const [photos, setPhotos] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const photosData = await client.fetch(featuredPhotosQuery);
+      const categoriesData = await client.fetch(allCategoriesQuery);
+      setPhotos(photosData || []);
+      setCategories(categoriesData || []);
+    };
+    fetchData();
+  }, []);
+
+  const openLightbox = (index: number) => {
+    setCurrentPhotoIndex(index);
+    setLightboxOpen(true);
+  };
 
   return (
     <div className="min-h-screen transition-colors duration-300"
@@ -31,8 +44,8 @@ export default async function Home() {
               className="object-cover"
               priority
             />
-            <div className="absolute inset-0" 
-              style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 40%, var(--background) 100%)' }} 
+            <div className="absolute inset-0"
+              style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 40%, var(--background) 100%)' }}
             />
           </div>
 
@@ -43,9 +56,9 @@ export default async function Home() {
             </p>
             <h1 className="mb-6 leading-[0.95]"
               style={{
-                fontFamily: 'var(--font-display)', 
+                fontFamily: 'var(--font-display)',
                 fontSize: 'clamp(48px, 10vw, 90px)',
-                fontWeight: 300, 
+                fontWeight: 300,
                 color: '#ffffff'
               }}>
               Where Light<br />
@@ -53,26 +66,26 @@ export default async function Home() {
             </h1>
             <p className="mx-auto mb-10 leading-relaxed"
               style={{
-                fontSize: '15px', 
-                color: 'rgba(255,255,255,0.8)', 
+                fontSize: '15px',
+                color: 'rgba(255,255,255,0.8)',
                 maxWidth: '480px'
               }}>
               Cinematic landscapes captured through years of chasing golden light across mountains and valleys
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
-              <Link 
-                href="/gallery" 
+              <Link
+                href="/gallery"
                 className="px-10 py-4 font-semibold text-sm tracking-wider uppercase rounded-full transition-all duration-300 hover:scale-105"
-                style={{ 
-                  backgroundColor: 'var(--accent)', 
+                style={{
+                  backgroundColor: 'var(--accent)',
                   color: 'var(--background)'
                 }}
               >
                 View Gallery
               </Link>
-              <Link 
-                href="/about" 
-                className="px-10 py-4 text-sm tracking-wider uppercase rounded-full transition-all duration-300 border border-white/40 text-white hover:bg-[var(--accent)] hover:text-[var(--background)] hover:border-transparent active:bg-[var(--accent)] active:text-[var(--background)] active:border-transparent"
+              <Link
+                href="/about"
+                className="px-10 py-4 text-sm tracking-wider uppercase rounded-full transition-all duration-300 border border-white/40 text-white hover:bg-[var(--accent)] hover:text-[var(--background)] hover:border-transparent"
               >
                 My Story
               </Link>
@@ -96,7 +109,7 @@ export default async function Home() {
             { num: '12', label: 'Countries' },
             { num: '200+', label: 'Clients' },
           ].map((stat, i) => (
-            <div key={i} 
+            <div key={i}
               className={`py-8 px-4 text-center ${i < 3 ? 'border-r' : ''} ${i === 1 ? 'border-r-0 md:border-r' : ''}`}
               style={{ borderColor: 'var(--border)' }}>
               <div className="text-3xl md:text-4xl font-light mb-1"
@@ -112,7 +125,7 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* Featured Photos - Mobile Tap Fix */}
+      {/* Featured Photos */}
       <section className="px-6 md:px-12 py-24 max-w-7xl mx-auto">
         <FadeIn>
           <div className="flex items-center gap-6 mb-16">
@@ -123,11 +136,14 @@ export default async function Home() {
             <div className="flex-1 h-px" style={{ backgroundColor: 'var(--border)' }} />
           </div>
         </FadeIn>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {photos.map((photo: any, index: number) => (
             <FadeIn key={photo._id} delay={index * 0.1}>
-              <div className="relative aspect-[4/3] overflow-hidden rounded-lg group cursor-pointer">
+              <div
+                className="relative aspect-[4/3] overflow-hidden rounded-lg group cursor-pointer"
+                onClick={() => openLightbox(index)}
+              >
                 <Image
                   src={urlFor(photo.image).url()}
                   alt={photo.title}
@@ -161,11 +177,11 @@ export default async function Home() {
             <div className="flex-1 h-px" style={{ backgroundColor: 'var(--border)' }} />
           </div>
         </FadeIn>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {categories.map((cat: any, index: number) => (
             <FadeIn key={cat._id} delay={index * 0.1}>
-              <Link 
+              <Link
                 href={`/gallery?category=${cat.slug.current}`}
                 className="relative aspect-square overflow-hidden rounded-lg group block"
               >
@@ -188,6 +204,14 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      {/* Lightbox for featured photos */}
+      <Lightbox
+        photos={photos}
+        initialIndex={currentPhotoIndex}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+      />
     </div>
   );
 }

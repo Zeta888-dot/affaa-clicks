@@ -6,12 +6,12 @@ import { ThemeProvider } from "./components/ThemeProvider";
 import FloatingButtons from "./components/FloatingButtons";
 
 export const metadata: Metadata = {
-  title: "Affaa Clicks",
-  description: "Travel blogger and photographer from Chitral, Pakistan — capturing the beauty of Hindu Kush and beyond.",
-  keywords: "Affaa Clicks, Chitral photography, Pakistan travel blogger, Hindu Kush, nature photography, landscape photography",
+  title: "Affaa Clicks — Nature & Landscape Photography from Chitral",
+  description: "Explore stunning nature and landscape photography from Chitral, Pakistan by Affaa. Travel guides, photo tips, and cultural insights from the Hindu Kush.",
+  keywords: "Affaa Clicks, Chitral photography, Pakistan landscape, Hindu Kush photos, nature photography Pakistan, travel blogger Chitral",
   openGraph: {
-    title: "Affaa Clicks",
-    description: "Travel blogger and photographer from Chitral, Pakistan",
+    title: "Affaa Clicks — Nature & Landscape Photography from Chitral",
+    description: "Travel blogger and photographer from Chitral, Pakistan — capturing the beauty of Hindu Kush and beyond.",
     url: "https://affaaclicks.com",
     siteName: "Affaa Clicks",
     locale: "en_US",

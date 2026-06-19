@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { client, urlFor } from "@/lib/sanity/client";
 import { allPhotosQuery, allCategoriesQuery } from "@/lib/sanity/queries";
 import Image from "next/image";
-import Link from "next/link";
 import FadeIn from "../components/FadeIn";
 import Lightbox from "../components/Lightbox";
 
@@ -17,6 +16,7 @@ function GalleryContent() {
   const [loading, setLoading] = useState(true);
 
   const searchParams = useSearchParams();
+  const router = useRouter();
   const activeCategory = searchParams.get("category");
 
   useEffect(() => {
@@ -68,21 +68,23 @@ function GalleryContent() {
 
         {/* Category Filter */}
         <div className="flex flex-wrap justify-center gap-3 mb-16">
-          <Link
-            href="/gallery"
+          <button
+            onClick={() => router.push("/gallery")}
             className="px-8 py-3 text-xs tracking-[2px] uppercase rounded-sm transition-all duration-300 border"
             style={{
               borderColor: "var(--border)",
               backgroundColor: !activeCategory ? "var(--accent)" : "transparent",
               color: !activeCategory ? "var(--background)" : "var(--foreground)",
+              cursor: "pointer",
+              fontFamily: "var(--font-body)",
             }}
           >
             All
-          </Link>
+          </button>
           {categories.map((cat: any) => (
-            <Link
+            <button
               key={cat._id}
-              href={`/gallery?category=${cat.slug.current}`}
+              onClick={() => router.push(`/gallery?category=${cat.slug.current}`)}
               className="px-8 py-3 text-xs tracking-[2px] uppercase rounded-sm transition-all duration-300 border"
               style={{
                 borderColor: "var(--border)",
@@ -92,17 +94,26 @@ function GalleryContent() {
                   activeCategory === cat.slug.current
                     ? "var(--background)"
                     : "var(--foreground)",
+                cursor: "pointer",
+                fontFamily: "var(--font-body)",
               }}
             >
               {cat.title}
-            </Link>
+            </button>
           ))}
         </div>
 
         {/* Loading state */}
         {loading && (
           <div className="text-center py-24">
-            <p style={{ color: "var(--muted)", letterSpacing: "2px", fontSize: "12px", textTransform: "uppercase" }}>
+            <p
+              style={{
+                color: "var(--muted)",
+                letterSpacing: "2px",
+                fontSize: "12px",
+                textTransform: "uppercase",
+              }}
+            >
               Loading...
             </p>
           </div>
@@ -111,45 +122,59 @@ function GalleryContent() {
         {/* Empty state */}
         {!loading && filteredPhotos.length === 0 && (
           <div className="text-center py-24">
-            <p style={{ color: "var(--muted)", letterSpacing: "2px", fontSize: "12px", textTransform: "uppercase" }}>
+            <p
+              style={{
+                color: "var(--muted)",
+                letterSpacing: "2px",
+                fontSize: "12px",
+                textTransform: "uppercase",
+              }}
+            >
               No photos yet in this category
             </p>
           </div>
         )}
 
         {/* Photos Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPhotos.map((photo: any, index: number) => (
-            <FadeIn key={photo._id} delay={index * 0.1}>
-              <div
-                className="relative aspect-[4/3] overflow-hidden rounded-lg group cursor-pointer"
-                onClick={() => openLightbox(index)}
-              >
-                <Image
-                  src={urlFor(photo.image).url()}
-                  alt={photo.title}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105 active:scale-105"
-                />
+        {!loading && filteredPhotos.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredPhotos.map((photo: any, index: number) => (
+              <FadeIn key={photo._id} delay={index * 0.1}>
                 <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 active:opacity-100 transition-opacity duration-300 flex items-end p-6"
-                  style={{ background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%)" }}
+                  className="relative aspect-[4/3] overflow-hidden rounded-lg group cursor-pointer"
+                  onClick={() => openLightbox(index)}
                 >
-                  <div>
-                    <p className="text-[10px] tracking-[3px] uppercase mb-2" style={{ color: "var(--accent)" }}>
-                      {photo.category?.title}
-                    </p>
-                    <h3 className="text-xl font-light text-white">{photo.title}</h3>
-                    <p className="text-xs text-white/50 mt-1">Click to view</p>
+                  <Image
+                    src={urlFor(photo.image).url()}
+                    alt={photo.title}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105 active:scale-105"
+                  />
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 active:opacity-100 transition-opacity duration-300 flex items-end p-6"
+                    style={{
+                      background:
+                        "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%)",
+                    }}
+                  >
+                    <div>
+                      <p
+                        className="text-[10px] tracking-[3px] uppercase mb-2"
+                        style={{ color: "var(--accent)" }}
+                      >
+                        {photo.category?.title}
+                      </p>
+                      <h3 className="text-xl font-light text-white">{photo.title}</h3>
+                      <p className="text-xs text-white/50 mt-1">Click to view</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
+              </FadeIn>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Lightbox */}
       <Lightbox
         photos={filteredPhotos}
         initialIndex={currentPhotoIndex}
@@ -160,16 +185,24 @@ function GalleryContent() {
   );
 }
 
-// useSearchParams ko Suspense mein wrap karna zaroori hai Next.js mein
 export default function GalleryPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <p style={{ color: "var(--muted)", letterSpacing: "2px", fontSize: "12px", textTransform: "uppercase" }}>
-          Loading...
-        </p>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <p
+            style={{
+              color: "var(--muted)",
+              letterSpacing: "2px",
+              fontSize: "12px",
+              textTransform: "uppercase",
+            }}
+          >
+            Loading...
+          </p>
+        </div>
+      }
+    >
       <GalleryContent />
     </Suspense>
   );

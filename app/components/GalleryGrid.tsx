@@ -13,8 +13,6 @@ export default function GalleryGrid({ photos, categories }: { photos: any[], cat
     : photos;
 
   const closeLightbox = () => setLightboxIndex(null);
-  const prevPhoto = () => setLightboxIndex((i) => (i !== null && i > 0 ? i - 1 : i));
-  const nextPhoto = () => setLightboxIndex((i) => (i !== null && i < filteredPhotos.length - 1 ? i + 1 : i));
 
   return (
     <>
@@ -106,18 +104,13 @@ export default function GalleryGrid({ photos, categories }: { photos: any[], cat
         </div>
       )}
 
-      {/* Lightbox */}
-      {lightboxIndex !== null && filteredPhotos[lightboxIndex] && (
-        <Lightbox
-          src={urlFor(filteredPhotos[lightboxIndex].image).url()}
-          alt={filteredPhotos[lightboxIndex].title}
-          onClose={closeLightbox}
-          onPrev={prevPhoto}
-          onNext={nextPhoto}
-          hasPrev={lightboxIndex > 0}
-          hasNext={lightboxIndex < filteredPhotos.length - 1}
-        />
-      )}
+      {/* Lightbox — fixed props */}
+      <Lightbox
+        photos={filteredPhotos}
+        initialIndex={lightboxIndex ?? 0}
+        isOpen={lightboxIndex !== null}
+        onClose={closeLightbox}
+      />
     </>
   );
 }

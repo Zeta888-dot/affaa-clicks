@@ -100,7 +100,7 @@ export default function Home() {
           {photos.map((photo: any, index: number) => (
             <FadeIn key={photo._id} delay={Math.min(index * 0.1, 0.6)}>
               <div
-                className="relative aspect-[4/3] overflow-hidden rounded-lg group cursor-pointer"
+                className="relative aspect-[4/3] overflow-hidden group cursor-pointer"
                 onClick={() => openLightbox(index)}
               >
                 <Image
@@ -166,7 +166,7 @@ export default function Home() {
             >
               <FadeIn delay={i * 0.1}>
                 <Link href={`/gallery?category=${cat.slug?.current}`} className="group block">
-                  <div className="relative aspect-[3/4] overflow-hidden rounded-lg">
+                  <div className="relative aspect-[3/4] overflow-hidden">
                     <Image
                       src={urlFor(cat.coverImage).url()}
                       alt={cat.title}

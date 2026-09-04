@@ -162,7 +162,7 @@ export default function GalleryGrid({
         {filteredPhotos.map((photo, index) => (
           <FadeIn key={photo._id} delay={Math.min(index * 0.05, 0.6)}>
             <div
-              className="relative aspect-[4/3] overflow-hidden rounded-lg cursor-zoom-in group"
+             className="relative aspect-[4/3] overflow-hidden group cursor-zoom-in"
               onClick={() => setLightboxIndex(index)}
             >
               <Image

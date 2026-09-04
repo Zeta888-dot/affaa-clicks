@@ -58,12 +58,18 @@ function GalleryContent() {
   useEffect(() => {
     const update = () => {
       const el = tabsRef.current[activeIndex];
-      if (el)
+      if (el) {
         setIndicator({
           left: el.offsetLeft,
           top: el.offsetTop + el.offsetHeight,
           width: el.offsetWidth,
         });
+        el.scrollIntoView({
+          behavior: "smooth",
+          inline: "center",
+          block: "nearest",
+        });
+      }
     };
     update();
     const t = setTimeout(update, 300);
@@ -84,7 +90,7 @@ function GalleryContent() {
       className="min-h-screen transition-colors duration-300"
       style={{ backgroundColor: "var(--background)", color: "var(--foreground)" }}
     >
-      <div className="px-6 md:px-12 pt-24 max-w-7xl mx-auto">
+      <div className="px-6 md:px-12 pt-32 max-w-7xl mx-auto">
         <FadeIn>
           <p
             className="text-[11px] tracking-[4px] uppercase text-center mb-4"
@@ -101,45 +107,21 @@ function GalleryContent() {
         </FadeIn>
       </div>
 
-      {/* Sticky Filter Bar — underline tabs */}
+      {/* Sticky Filter Bar, single scrollable row */}
       <div
-        className="sticky top-[72px] z-40 pt-6 pb-4 mb-10"
+        className="sticky top-[72px] z-40 pt-5 pb-4 mb-10"
         style={{
-          backgroundColor: isDark ? "rgba(8,12,11,0.85)" : "rgba(240,242,240,0.85)",
+          backgroundColor: isDark ? "rgba(8,12,11,0.9)" : "rgba(255,255,255,0.9)",
           backdropFilter: "blur(16px)",
         }}
       >
-        <div className="relative flex flex-wrap justify-center gap-x-10 gap-y-4 px-6">
-          <button
-            ref={(el) => {
-              tabsRef.current[0] = el;
-            }}
-            onClick={() => router.push("/gallery")}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: "4px 0",
-              fontSize: "12px",
-              letterSpacing: "3px",
-              textTransform: "uppercase",
-              color: !activeCategory ? "var(--foreground)" : "var(--muted)",
-              transition: "color 0.3s",
-            }}
-          >
-            All
-            <span className="ml-1.5 text-[9px]" style={{ color: "var(--accent)" }}>
-              {photos.length}
-            </span>
-          </button>
-
-          {categories.map((cat: any, i: number) => (
+        <div className="overflow-x-auto scrollbar-hide">
+          <div className="relative flex w-max gap-10 px-6 md:px-12 mx-auto">
             <button
-              key={cat._id}
               ref={(el) => {
-                tabsRef.current[i + 1] = el;
+                tabsRef.current[0] = el;
               }}
-              onClick={() => router.push(`/gallery?category=${cat.slug.current}`)}
+              onClick={() => router.push("/gallery")}
               style={{
                 background: "none",
                 border: "none",
@@ -148,43 +130,71 @@ function GalleryContent() {
                 fontSize: "12px",
                 letterSpacing: "3px",
                 textTransform: "uppercase",
-                color:
-                  activeCategory === cat.slug.current
-                    ? "var(--foreground)"
-                    : "var(--muted)",
+                whiteSpace: "nowrap",
+                color: !activeCategory ? "var(--foreground)" : "var(--muted)",
                 transition: "color 0.3s",
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.color = "var(--foreground)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.color =
-                  activeCategory === cat.slug.current
-                    ? "var(--foreground)"
-                    : "var(--muted)")
-              }
             >
-              {cat.title}
+              All
               <span className="ml-1.5 text-[9px]" style={{ color: "var(--accent)" }}>
-                {countFor(cat.slug.current)}
+                {photos.length}
               </span>
             </button>
-          ))}
 
-          {/* Sliding underline */}
-          <span
-            className="absolute h-[2px] transition-all duration-500"
-            style={{
-              left: indicator.left,
-              top: indicator.top,
-              width: indicator.width,
-              backgroundColor: "var(--accent)",
-            }}
-          />
+            {categories.map((cat: any, i: number) => (
+              <button
+                key={cat._id}
+                ref={(el) => {
+                  tabsRef.current[i + 1] = el;
+                }}
+                onClick={() => router.push(`/gallery?category=${cat.slug.current}`)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "4px 0",
+                  fontSize: "12px",
+                  letterSpacing: "3px",
+                  textTransform: "uppercase",
+                  whiteSpace: "nowrap",
+                  color:
+                    activeCategory === cat.slug.current
+                      ? "var(--foreground)"
+                      : "var(--muted)",
+                  transition: "color 0.3s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.color = "var(--foreground)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color =
+                    activeCategory === cat.slug.current
+                      ? "var(--foreground)"
+                      : "var(--muted)")
+                }
+              >
+                {cat.title}
+                <span className="ml-1.5 text-[9px]" style={{ color: "var(--accent)" }}>
+                  {countFor(cat.slug.current)}
+                </span>
+              </button>
+            ))}
+
+            {/* Sliding underline */}
+            <span
+              className="absolute h-[2px] transition-all duration-500"
+              style={{
+                left: indicator.left,
+                top: indicator.top,
+                width: indicator.width,
+                backgroundColor: "var(--accent)",
+              }}
+            />
+          </div>
         </div>
 
         {/* Results meta */}
-        <div className="flex items-center justify-center gap-4 mt-6">
+        <div className="flex items-center justify-center gap-4 mt-5">
           <div className="h-px w-10" style={{ backgroundColor: "var(--border)" }} />
           <p
             className="text-[10px] tracking-[3px] uppercase"
@@ -237,13 +247,14 @@ function GalleryContent() {
             {filteredPhotos.map((photo: any, index: number) => (
               <FadeIn key={photo._id} delay={Math.min(index * 0.05, 0.6)}>
                 <div
-                  className="relative aspect-[4/3] overflow-hidden rounded-lg group cursor-zoom-in"
+                  className="relative aspect-[4/3] overflow-hidden group cursor-zoom-in"
                   onClick={() => openLightbox(index)}
                 >
                   <Image
                     src={urlFor(photo.image).url()}
                     alt={photo.title}
                     fill
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div

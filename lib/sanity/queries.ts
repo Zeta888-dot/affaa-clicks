@@ -63,4 +63,20 @@ export const singlePostQuery = groq`
     category,
     publishedAt
   }
+
+  `
+ export const heroSettingsQuery = groq`
+  *[_type == "homeSettings"][0] {
+    eyebrow,
+    titleLine1,
+    titleLine2,
+    titleAccent,
+    subtitle,
+    primaryButtonText,
+    primaryButtonLink,
+    secondaryButtonText,
+    secondaryButtonLink,
+    "desktopImage": desktopImage.asset->url,
+    "mobileImage": mobileImage.asset->url
+  }
 `
